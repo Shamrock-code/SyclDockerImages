@@ -5,7 +5,8 @@ FROM sycldocker-ubuntu20.04_llvm15_cuda11.0.2_rocm5.4.3
 RUN wget https://github.com/oneapi-src/level-zero/releases/download/v1.2.3/level-zero-devel_1.2.3+u18.04_amd64.deb
 RUN wget https://github.com/oneapi-src/level-zero/releases/download/v1.2.3/level-zero_1.2.3+u18.04_amd64.deb
 RUN sudo dpkg -i ./level-zero*
-
+RUN rm level-zero-devel_1.2.3+u18.04_amd64.deb
+RUN rm level-zero_1.2.3+u18.04_amd64.deb
 
 RUN mkdir compilers_gits
 RUN mkdir compilers
@@ -37,7 +38,7 @@ RUN clinfo
 
 
 ###################################
-## DPC++ (CUDA)
+## DPC++
 ###################################
 WORKDIR /home/docker/compilers_gits
 
@@ -50,16 +51,20 @@ RUN CUDA_LIB_PATH=~/opt/cuda/lib64/stubs \
         python3 buildbot/configure.py \
         --llvm-external-projects compiler-rt \
             --cuda \
+            --hip \
             --enable-esimd-emulator \
-            --cmake-opt="-DCMAKE_INSTALL_PREFIX=/home/docker/compilers/DPCPP_cuda11" \
-            --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=~/opt/cuda"
-
+            --enable-plugin native_cpu \
+            --cmake-opt="-DCMAKE_INSTALL_PREFIX=/home/docker/compilers/DPCPP" \
+            --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=~/opt/cuda" \
+            --cmake-opt="-DSYCL_BUILD_PI_HIP_ROCM_DIR=/opt/rocm"
 
 WORKDIR /home/docker/compilers_gits/llvm/build
 
+RUN ninja all tools/libdevice/libsycldevice
 RUN ninja install
 
-
+WORKDIR /home/docker/compilers_gits
+RUN rm -r llvm
 
 ###################################
 ## Opensycl
