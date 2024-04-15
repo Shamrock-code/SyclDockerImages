@@ -80,7 +80,6 @@ RUN CUDA_LIB_PATH=~/opt/cuda/lib64/stubs \
         --llvm-external-projects compiler-rt \
             --cuda \
             --hip \
-            --enable-plugin native_cpu \
             --cmake-opt="-DCMAKE_INSTALL_PREFIX=/home/docker/compilers/DPCPP" \
             --cmake-opt="-DCUDA_TOOLKIT_ROOT_DIR=~/opt/cuda" \
             --cmake-opt="-DSYCL_BUILD_PI_HIP_ROCM_DIR=/opt/rocm"
