@@ -70,7 +70,7 @@ RUN clinfo
 ###################################
 WORKDIR /home/docker/compilers_gits
 
-RUN git clone https://github.com/intel/llvm -b sycl
+RUN git clone https://github.com/intel/llvm -b 2024-WW14
 
 WORKDIR /home/docker/compilers_gits/llvm
 
